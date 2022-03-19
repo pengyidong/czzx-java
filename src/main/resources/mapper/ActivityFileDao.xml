@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.peng.note.dao.ActivityFileDao">
+
+    <resultMap type="com.peng.note.entity.ActivityFile" id="ActivityFileMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="createby" column="createBy" jdbcType="VARCHAR"/>
+        <result property="updatetime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="updateby" column="updateBy" jdbcType="VARCHAR"/>
+        <result property="activityId" column="activity_id" jdbcType="VARCHAR"/>
+        <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+        <result property="fileType" column="file_type" jdbcType="VARCHAR"/>
+        <result property="fileExtension" column="file_extension" jdbcType="VARCHAR"/>
+        <result property="filePath" column="file_path" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ActivityFileMap">
+        select
+          id, createTime, createBy, updateTime, updateBy, activity_id, file_name, file_type, file_extension, file_path
+        from activity_file
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ActivityFileMap">
+        select
+          id, createTime, createBy, updateTime, updateBy, activity_id, file_name, file_type, file_extension, file_path
+        from activity_file
+        <where>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="createtime != null">
+                and createTime = #{createtime}
+            </if>
+            <if test="createby != null and createby != ''">
+                and createBy = #{createby}
+            </if>
+            <if test="updatetime != null">
+                and updateTime = #{updatetime}
+            </if>
+            <if test="updateby != null and updateby != ''">
+                and updateBy = #{updateby}
+            </if>
+            <if test="activityId != null and activityId != ''">
+                and activity_id = #{activityId}
+            </if>
+            <if test="fileName != null and fileName != ''">
+                and file_name = #{fileName}
+            </if>
+            <if test="fileType != null and fileType != ''">
+                and file_type = #{fileType}
+            </if>
+            <if test="fileExtension != null and fileExtension != ''">
+                and file_extension = #{fileExtension}
+            </if>
+            <if test="filePath != null and filePath != ''">
+                and file_path = #{filePath}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from activity_file
+        <where>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="createtime != null">
+                and createTime = #{createtime}
+            </if>
+            <if test="createby != null and createby != ''">
+                and createBy = #{createby}
+            </if>
+            <if test="updatetime != null">
+                and updateTime = #{updatetime}
+            </if>
+            <if test="updateby != null and updateby != ''">
+                and updateBy = #{updateby}
+            </if>
+            <if test="activityId != null and activityId != ''">
+                and activity_id = #{activityId}
+            </if>
+            <if test="fileName != null and fileName != ''">
+                and file_name = #{fileName}
+            </if>
+            <if test="fileType != null and fileType != ''">
+                and file_type = #{fileType}
+            </if>
+            <if test="fileExtension != null and fileExtension != ''">
+                and file_extension = #{fileExtension}
+            </if>
+            <if test="filePath != null and filePath != ''">
+                and file_path = #{filePath}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into activity_file(id,createTime, createBy, updateTime, updateBy, activity_id, file_name, file_type, file_extension, file_path)
+        values (#{activityFile.id},#{activityFile.createtime}, #{activityFile.createby}, #{activityFile.updatetime}, #{activityFile.updateby}, #{activityFile.activityId}, #{activityFile.fileName}, #{activityFile.fileType}, #{activityFile.fileExtension}, #{activityFile.filePath})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into activity_file(createTime, createBy, updateTime, updateBy, activity_id, file_name, file_type, file_extension, file_path)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.createtime}, #{entity.createby}, #{entity.updatetime}, #{entity.updateby}, #{entity.activityId}, #{entity.fileName}, #{entity.fileType}, #{entity.fileExtension}, #{entity.filePath})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into activity_file(createTime, createBy, updateTime, updateBy, activity_id, file_name, file_type, file_extension, file_path)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.createtime}, #{entity.createby}, #{entity.updatetime}, #{entity.updateby}, #{entity.activityId}, #{entity.fileName}, #{entity.fileType}, #{entity.fileExtension}, #{entity.filePath})
+        </foreach>
+        on duplicate key update
+        createTime = values(createTime),
+        createBy = values(createBy),
+        updateTime = values(updateTime),
+        updateBy = values(updateBy),
+        activity_id = values(activity_id),
+        file_name = values(file_name),
+        file_type = values(file_type),
+        file_extension = values(file_extension),
+        file_path = values(file_path)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update activity_file
+        <set>
+            <if test="createtime != null">
+                createTime = #{createtime},
+            </if>
+            <if test="createby != null and createby != ''">
+                createBy = #{createby},
+            </if>
+            <if test="updatetime != null">
+                updateTime = #{updatetime},
+            </if>
+            <if test="updateby != null and updateby != ''">
+                updateBy = #{updateby},
+            </if>
+            <if test="activityId != null and activityId != ''">
+                activity_id = #{activityId},
+            </if>
+            <if test="fileName != null and fileName != ''">
+                file_name = #{fileName},
+            </if>
+            <if test="fileType != null and fileType != ''">
+                file_type = #{fileType},
+            </if>
+            <if test="fileExtension != null and fileExtension != ''">
+                file_extension = #{fileExtension},
+            </if>
+            <if test="filePath != null and filePath != ''">
+                file_path = #{filePath},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from activity_file where id = #{id}
+    </delete>
+
+</mapper>
+

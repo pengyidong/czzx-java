@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.peng.note.dao.ActivityDao">
+
+    <resultMap type="com.peng.note.entity.Activity" id="ActivityMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="createby" column="createBy" jdbcType="VARCHAR"/>
+        <result property="updatetime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="updateby" column="updateBy" jdbcType="VARCHAR"/>
+        <result property="visitingunit" column="visitingUnit" jdbcType="VARCHAR"/>
+        <result property="visitingcontact" column="visitingContact" jdbcType="VARCHAR"/>
+        <result property="contactnumber" column="contactNumber" jdbcType="VARCHAR"/>
+        <result property="typeofactivity" column="typeOfActivity" jdbcType="VARCHAR"/>
+        <result property="eventaddress" column="eventAddress" jdbcType="VARCHAR"/>
+        <result property="starttime" column="startTime" jdbcType="TIMESTAMP"/>
+        <result property="endtime" column="endTime" jdbcType="TIMESTAMP"/>
+        <result property="numberofpeople" column="numberOfPeople" jdbcType="INTEGER"/>
+        <result property="reasonforvisit" column="reasonForVisit" jdbcType="VARCHAR"/>
+        <result property="note" column="note" jdbcType="VARCHAR"/>
+        <result property="price" column="price" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ActivityMap">
+        select
+          id, createTime, createBy, updateTime, updateBy, visitingUnit, visitingContact, contactNumber, typeOfActivity, eventAddress, startTime, endTime, numberOfPeople, reasonForVisit, note, price,status
+        from activity
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ActivityMap">
+        select
+          id, createTime, createBy, updateTime, updateBy, visitingUnit, visitingContact, contactNumber, typeOfActivity, eventAddress, startTime, endTime, numberOfPeople, reasonForVisit, note, price,status
+        from activity
+        <where>
+            <if test="activity!=null">
+            <if test="activity.id != null and activity.id != ''">
+                and id = #{activity.id}
+            </if>
+            <if test="activity.createtime != null">
+                and createTime = #{activity.createtime}
+            </if>
+            <if test="activity.createby != null and activity.createby != ''">
+                and createBy = #{activity.createby}
+            </if>
+            <if test="activity.updatetime != null">
+                and updateTime = #{activity.updatetime}
+            </if>
+            <if test="activity.updateby != null and activity.updateby != ''">
+                and updateBy = #{activity.updateby}
+            </if>
+            <if test="activity.visitingunit != null and activity.visitingunit != ''">
+                and visitingUnit = #{activity.visitingunit}
+            </if>
+            <if test="activity.visitingcontact != null and activity.visitingcontact != ''">
+                and visitingContact = #{activity.visitingcontact}
+            </if>
+            <if test="activity.contactnumber != null and activity.contactnumber != ''">
+                and contactNumber = #{activity.contactnumber}
+            </if>
+            <if test="activity.typeofactivity != null and activity.typeofactivity != ''">
+                and typeOfActivity = #{activity.typeofactivity}
+            </if>
+            <if test="activity.eventaddress != null and activity.eventaddress != ''">
+                and eventAddress = #{activity.eventaddress}
+            </if>
+            <if test="activity.numberofpeople != null">
+                and numberOfPeople = #{activity.numberofpeople}
+            </if>
+            <if test="activity.reasonforvisit != null and activity.reasonforvisit != ''">
+                and reasonForVisit = #{activity.reasonforvisit}
+            </if>
+            <if test="activity.note != null and activity.note != ''">
+                and note = #{activity.note}
+            </if>
+            <if test="activity.price != null">
+                and price = #{activity.price}
+            </if>
+            <if test="activity.status != null and activity.status != ''">
+                    and status = #{activity.status}
+            </if>
+            <if test="activity.starttime != null">
+
+                and (date(startTime)<![CDATA[ >= ]]>date(#{activity.starttime})
+            </if>
+            <if test="activity.endtime != null">
+                and date(endTime) <![CDATA[ <= ]]> date(#{activity.endtime}))
+            </if>
+            </if>
+        </where>
+        order  by createTime desc
+        limit #{pageable.offset}, #{pageable.pageSize}
+
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from activity
+        <where>
+            <if test="activity!=null">
+                <if test="activity.id != null and activity.id != ''">
+                    and id = #{activity.id}
+                </if>
+                <if test="activity.createtime != null">
+                    and createTime = #{activity.createtime}
+                </if>
+                <if test="activity.createby != null and activity.createby != ''">
+                    and createBy = #{activity.createby}
+                </if>
+                <if test="activity.updatetime != null">
+                    and updateTime = #{activity.updatetime}
+                </if>
+                <if test="activity.updateby != null and activity.updateby != ''">
+                    and updateBy = #{activity.updateby}
+                </if>
+                <if test="activity.visitingunit != null and activity.visitingunit != ''">
+                    and visitingUnit = #{activity.visitingunit}
+                </if>
+                <if test="activity.visitingcontact != null and activity.visitingcontact != ''">
+                    and visitingContact = #{activity.visitingcontact}
+                </if>
+                <if test="activity.contactnumber != null and activity.contactnumber != ''">
+                    and contactNumber = #{activity.contactnumber}
+                </if>
+                <if test="activity.typeofactivity != null and activity.typeofactivity != ''">
+                    and typeOfActivity = #{activity.typeofactivity}
+                </if>
+                <if test="activity.eventaddress != null and activity.eventaddress != ''">
+                    and eventAddress = #{activity.eventaddress}
+                </if>
+                <if test="activity.numberofpeople != null">
+                    and numberOfPeople = #{activity.numberofpeople}
+                </if>
+                <if test="activity.reasonforvisit != null and activity.reasonforvisit != ''">
+                    and reasonForVisit = #{activity.reasonforvisit}
+                </if>
+                <if test="activity.note != null and activity.note != ''">
+                    and note = #{activity.note}
+                </if>
+                <if test="activity.price != null">
+                    and price = #{activity.price}
+                </if>
+                <if test="activity.status != null and activity.status != ''">
+                    and status = #{activity.status}
+                </if>
+                <if test="activity.starttime != null">
+
+                    and (date(startTime)<![CDATA[ >= ]]>date(#{activity.starttime})
+                </if>
+                <if test="activity.endtime != null">
+                    and date(endTime) <![CDATA[ <= ]]> date(#{activity.endtime}))
+                </if>
+            </if>
+        </where>
+    </select>
+    <select id="queryByPage" resultType="com.peng.note.entity.Note">
+
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into activity(id,createTime, createBy, updateTime, updateBy, visitingUnit, visitingContact, contactNumber, typeOfActivity, eventAddress, startTime, endTime, numberOfPeople, reasonForVisit, note, price,status)
+        values (#{id},#{createtime}, #{createby}, #{updatetime}, #{updateby}, #{visitingunit}, #{visitingcontact}, #{contactnumber}, #{typeofactivity}, #{eventaddress}, #{starttime}, #{endtime}, #{numberofpeople}, #{reasonforvisit}, #{note}, #{price},#{status})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into activity(createTime, createBy, updateTime, updateBy, visitingUnit, visitingContact, contactNumber, typeOfActivity, eventAddress, startTime, endTime, numberOfPeople, reasonForVisit, note, price,status)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.createtime}, #{entity.createby}, #{entity.updatetime}, #{entity.updateby}, #{entity.visitingunit}, #{entity.visitingcontact}, #{entity.contactnumber}, #{entity.typeofactivity}, #{entity.eventaddress}, #{entity.starttime}, #{entity.endtime}, #{entity.numberofpeople}, #{entity.reasonforvisit}, #{entity.note}, #{entity.price},#{entity.status})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into activity(createTime, createBy, updateTime, updateBy, visitingUnit, visitingContact, contactNumber, typeOfActivity, eventAddress, startTime, endTime, numberOfPeople, reasonForVisit, note, price,status)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.createtime}, #{entity.createby}, #{entity.updatetime}, #{entity.updateby}, #{entity.visitingunit}, #{entity.visitingcontact}, #{entity.contactnumber}, #{entity.typeofactivity}, #{entity.eventaddress}, #{entity.starttime}, #{entity.endtime}, #{entity.numberofpeople}, #{entity.reasonforvisit}, #{entity.note}, #{entity.price},#{entity.status})
+        </foreach>
+        on duplicate key update
+        createTime = values(createTime),
+        createBy = values(createBy),
+        updateTime = values(updateTime),
+        updateBy = values(updateBy),
+        visitingUnit = values(visitingUnit),
+        visitingContact = values(visitingContact),
+        contactNumber = values(contactNumber),
+        typeOfActivity = values(typeOfActivity),
+        eventAddress = values(eventAddress),
+        startTime = values(startTime),
+        endTime = values(endTime),
+        numberOfPeople = values(numberOfPeople),
+        reasonForVisit = values(reasonForVisit),
+        note = values(note),
+        price = values(price)
+        status = values(status)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update activity
+        <set>
+            <if test="createtime != null">
+                createTime = #{createtime},
+            </if>
+            <if test="createby != null and createby != ''">
+                createBy = #{createby},
+            </if>
+            <if test="updatetime != null">
+                updateTime = #{updatetime},
+            </if>
+            <if test="updateby != null and updateby != ''">
+                updateBy = #{updateby},
+            </if>
+            <if test="visitingunit != null and visitingunit != ''">
+                visitingUnit = #{visitingunit},
+            </if>
+            <if test="visitingcontact != null and visitingcontact != ''">
+                visitingContact = #{visitingcontact},
+            </if>
+            <if test="contactnumber != null and contactnumber != ''">
+                contactNumber = #{contactnumber},
+            </if>
+            <if test="typeofactivity != null and typeofactivity != ''">
+                typeOfActivity = #{typeofactivity},
+            </if>
+            <if test="eventaddress != null and eventaddress != ''">
+                eventAddress = #{eventaddress},
+            </if>
+            <if test="starttime != null">
+                startTime = #{starttime},
+            </if>
+            <if test="endtime != null">
+                endTime = #{endtime},
+            </if>
+            <if test="numberofpeople != null">
+                numberOfPeople = #{numberofpeople},
+            </if>
+            <if test="reasonforvisit != null and reasonforvisit != ''">
+                reasonForVisit = #{reasonforvisit},
+            </if>
+            <if test="note != null and note != ''">
+                note = #{note},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="activity.status != null and activity.status != ''">
+                and status = #{activity.status}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from activity where id = #{id}
+    </delete>
+
+</mapper>
+

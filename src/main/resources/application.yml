@@ -1,0 +1,20 @@
+server:
+  port: 9101
+  servlet:
+    context-path: /note
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://175.178.87.39:3306/note
+    username: note_peng
+    password: 123456
+mybatis:
+  type-aliases-package: com.peng.note
+  mapper-locations: classpath:mapper/*.xml
+
+token:
+  secret: k1MywidXNlcm5hbWUiOiJhZG1pbiJ
+
+logging:
+    level:
+      com.peng.note.dao: debug

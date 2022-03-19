@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.peng.note.dao.UserDao">
+
+    <resultMap type="com.peng.note.entity.User" id="UserMap">
+        <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+        <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
+        <result property="phoneNumber" column="phone_number" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="INTEGER"/>
+        <result property="age" column="age" jdbcType="INTEGER"/>
+        <result property="eMail" column="e_mail" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserMap">
+        select
+          user_id, nick_name, phone_number, sex, age, e_mail, create_time, update_by, update_time, address, create_by
+        from user
+        where user_id = #{userId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UserMap">
+        select
+          user_id, nick_name, phone_number, sex, age, e_mail, create_time, update_by, update_time, address, create_by
+        from user
+        <where>
+            <if test="userId != null and userId != ''">
+                and user_id = #{userId}
+            </if>
+            <if test="nickName != null and nickName != ''">
+                and nick_name = #{nickName}
+            </if>
+            <if test="phoneNumber != null and phoneNumber != ''">
+                and phone_number = #{phoneNumber}
+            </if>
+            <if test="sex != null">
+                and sex = #{sex}
+            </if>
+            <if test="age != null">
+                and age = #{age}
+            </if>
+            <if test="eMail != null and eMail != ''">
+                and e_mail = #{eMail}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from user
+        <where>
+            <if test="userId != null and userId != ''">
+                and user_id = #{userId}
+            </if>
+            <if test="nickName != null and nickName != ''">
+                and nick_name = #{nickName}
+            </if>
+            <if test="phoneNumber != null and phoneNumber != ''">
+                and phone_number = #{phoneNumber}
+            </if>
+            <if test="sex != null">
+                and sex = #{sex}
+            </if>
+            <if test="age != null">
+                and age = #{age}
+            </if>
+            <if test="eMail != null and eMail != ''">
+                and e_mail = #{eMail}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
+            </if>
+            <if test="createBy != null and createBy != ''">
+                and create_by = #{createBy}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="userId" useGeneratedKeys="true">
+        insert into user(user_id,nick_name, phone_number, sex, age, e_mail, create_time, update_by, update_time, address, create_by)
+        values (#{userId},#{nickName}, #{phoneNumber}, #{sex}, #{age}, #{eMail}, #{createTime}, #{updateBy}, #{updateTime}, #{address}, #{createBy})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="userId" useGeneratedKeys="true">
+        insert into user(user_id,nick_name, phone_number, sex, age, e_mail, create_time, update_by, update_time, address, create_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.userId}#{entity.nickName}, #{entity.phoneNumber}, #{entity.sex}, #{entity.age}, #{entity.eMail}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.address}, #{entity.createBy})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="userId" useGeneratedKeys="true">
+        insert into user(nick_name, phone_number, sex, age, e_mail, create_time, update_by, update_time, address, create_by)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.nickName}, #{entity.phoneNumber}, #{entity.sex}, #{entity.age}, #{entity.eMail}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.address}, #{entity.createBy})
+        </foreach>
+        on duplicate key update
+        nick_name = values(nick_name),
+        phone_number = values(phone_number),
+        sex = values(sex),
+        age = values(age),
+        e_mail = values(e_mail),
+        create_time = values(create_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        address = values(address),
+        create_by = values(create_by)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update user
+        <set>
+            <if test="nickName != null and nickName != ''">
+                nick_name = #{nickName},
+            </if>
+            <if test="phoneNumber != null and phoneNumber != ''">
+                phone_number = #{phoneNumber},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="eMail != null and eMail != ''">
+                e_mail = #{eMail},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from user where user_id = #{userId}
+    </delete>
+
+</mapper>
+

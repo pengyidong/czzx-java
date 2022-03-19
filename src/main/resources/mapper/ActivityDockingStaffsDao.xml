@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.peng.note.dao.ActivityDockingStaffsDao">
+
+    <resultMap type="com.peng.note.entity.ActivityDockingStaffs" id="ActivityDockingStaffsMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="createby" column="createBy" jdbcType="VARCHAR"/>
+        <result property="updatetime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="updateby" column="updateBy" jdbcType="VARCHAR"/>
+        <result property="activityId" column="activity_id" jdbcType="VARCHAR"/>
+        <result property="dockingStaffs" column="docking_staffs" jdbcType="VARCHAR"/>
+        <result property="dockingPhoneNumber" column="docking_phone_number" jdbcType="VARCHAR"/>
+        <result property="dockingStaffsId" column="docking_staffs_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ActivityDockingStaffsMap">
+        select
+          id, createTime, createBy, updateTime, updateBy, activity_id, docking_staffs, docking_phone_number, docking_staffs_id
+        from activity_docking_staffs
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ActivityDockingStaffsMap">
+        select
+          id, createTime, createBy, updateTime, updateBy, activity_id, docking_staffs, docking_phone_number, docking_staffs_id
+        from activity_docking_staffs
+        <where>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="createtime != null">
+                and createTime = #{createtime}
+            </if>
+            <if test="createby != null and createby != ''">
+                and createBy = #{createby}
+            </if>
+            <if test="updatetime != null">
+                and updateTime = #{updatetime}
+            </if>
+            <if test="updateby != null and updateby != ''">
+                and updateBy = #{updateby}
+            </if>
+            <if test="activityId != null and activityId != ''">
+                and activity_id = #{activityId}
+            </if>
+            <if test="dockingStaffs != null and dockingStaffs != ''">
+                and docking_staffs = #{dockingStaffs}
+            </if>
+            <if test="dockingPhoneNumber != null and dockingPhoneNumber != ''">
+                and docking_phone_number = #{dockingPhoneNumber}
+            </if>
+            <if test="dockingStaffsId != null and dockingStaffsId != ''">
+                and docking_staffs_id = #{dockingStaffsId}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from activity_docking_staffs
+        <where>
+            <if test="id != null and id != ''">
+                and id = #{id}
+            </if>
+            <if test="createtime != null">
+                and createTime = #{createtime}
+            </if>
+            <if test="createby != null and createby != ''">
+                and createBy = #{createby}
+            </if>
+            <if test="updatetime != null">
+                and updateTime = #{updatetime}
+            </if>
+            <if test="updateby != null and updateby != ''">
+                and updateBy = #{updateby}
+            </if>
+            <if test="activityId != null and activityId != ''">
+                and activity_id = #{activityId}
+            </if>
+            <if test="dockingStaffs != null and dockingStaffs != ''">
+                and docking_staffs = #{dockingStaffs}
+            </if>
+            <if test="dockingPhoneNumber != null and dockingPhoneNumber != ''">
+                and docking_phone_number = #{dockingPhoneNumber}
+            </if>
+            <if test="dockingStaffsId != null and dockingStaffsId != ''">
+                and docking_staffs_id = #{dockingStaffsId}
+            </if>
+        </where>
+    </select>
+    <select id="queryByActivityId" resultType="java.lang.String">
+        select
+        docking_staffs
+        from activity_docking_staffs
+        where activity_id = #{activityId}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into activity_docking_staffs(createTime, createBy, updateTime, updateBy, activity_id, docking_staffs, docking_phone_number, docking_staffs_id)
+        values (#{createtime}, #{createby}, #{updatetime}, #{updateby}, #{activityId}, #{dockingStaffs}, #{dockingPhoneNumber}, #{dockingStaffsId})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into activity_docking_staffs(createTime, createBy, updateTime, updateBy, activity_id, docking_staffs, docking_phone_number, docking_staffs_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.createtime}, #{entity.createby}, #{entity.updatetime}, #{entity.updateby}, #{entity.activityId}, #{entity.dockingStaffs}, #{entity.dockingPhoneNumber}, #{entity.dockingStaffsId})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into activity_docking_staffs(createTime, createBy, updateTime, updateBy, activity_id, docking_staffs, docking_phone_number, docking_staffs_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.createtime}, #{entity.createby}, #{entity.updatetime}, #{entity.updateby}, #{entity.activityId}, #{entity.dockingStaffs}, #{entity.dockingPhoneNumber}, #{entity.dockingStaffsId})
+        </foreach>
+        on duplicate key update
+        createTime = values(createTime),
+        createBy = values(createBy),
+        updateTime = values(updateTime),
+        updateBy = values(updateBy),
+        activity_id = values(activity_id),
+        docking_staffs = values(docking_staffs),
+        docking_phone_number = values(docking_phone_number),
+        docking_staffs_id = values(docking_staffs_id)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update activity_docking_staffs
+        <set>
+            <if test="createtime != null">
+                createTime = #{createtime},
+            </if>
+            <if test="createby != null and createby != ''">
+                createBy = #{createby},
+            </if>
+            <if test="updatetime != null">
+                updateTime = #{updatetime},
+            </if>
+            <if test="updateby != null and updateby != ''">
+                updateBy = #{updateby},
+            </if>
+            <if test="activityId != null and activityId != ''">
+                activity_id = #{activityId},
+            </if>
+            <if test="dockingStaffs != null and dockingStaffs != ''">
+                docking_staffs = #{dockingStaffs},
+            </if>
+            <if test="dockingPhoneNumber != null and dockingPhoneNumber != ''">
+                docking_phone_number = #{dockingPhoneNumber},
+            </if>
+            <if test="dockingStaffsId != null and dockingStaffsId != ''">
+                docking_staffs_id = #{dockingStaffsId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from activity_docking_staffs where id = #{id}
+    </delete>
+
+    <delete id="deleteByActivityId">
+        delete from activity_docking_staffs where activity_id = #{activityId}
+    </delete>
+
+</mapper>
+
