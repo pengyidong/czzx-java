@@ -12,7 +12,6 @@ import java.util.List;
  * @Date 2022/2/11 20:42
  * @Version 1.0
  */
-@Data
 public class Note  {
 
     /**
@@ -27,5 +26,27 @@ public class Note  {
 
     private Activity activity;
 
+    public List<String> getDockingStaffs() {
+        return dockingStaffs;
+    }
 
+    public void setDockingStaffs(List<String> dockingStaffs) {
+        this.dockingStaffs = dockingStaffs;
+    }
+
+    public List<String> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<String> participants) {
+        this.participants = participants;
+    }
+
+    public Activity getActivity() {
+        return activity;
+    }
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
+    }
 }

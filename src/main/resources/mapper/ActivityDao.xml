@@ -249,8 +249,8 @@
             <if test="price != null">
                 price = #{price},
             </if>
-            <if test="activity.status != null and activity.status != ''">
-                and status = #{activity.status}
+            <if test="status != null and status != ''">
+                status = #{status}
             </if>
         </set>
         where id = #{id}

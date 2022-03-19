@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -85,7 +86,7 @@ public class NoteServiceImpl implements NoteService {
     }
 
     @Override
-    public void update(Note note) {
+    public void update( Note note) {
         //获取当前登录人信息
         UserPw userPw = UserHandle.get();
         String userName = userPw.getUserName();
@@ -101,20 +102,30 @@ public class NoteServiceImpl implements NoteService {
 
 
         if (!CollectionUtils.isEmpty(note.getDockingStaffs())){
-            //根据活动id清空对接人表，并插入 TODO
-            ActivityDockingStaffs activityDockingStaffs = new ActivityDockingStaffs();
-            activityDockingStaffs.setActivityId(activityId);
-            activityDockingStaffs.setCreatetime(now);
-            activityDockingStaffs.setCreateby(userName);
-            activityDockingStaffsService.insert(activityDockingStaffs);
+            //根据活动id清空对接人表，并插入
+            List<String> dockingStaffs = note.getDockingStaffs();
+            for (String dockingStaff : dockingStaffs) {
+                ActivityDockingStaffs activityDockingStaffs = new ActivityDockingStaffs();
+                activityDockingStaffs.setActivityId(activityId);
+                activityDockingStaffs.setCreatetime(now);
+                activityDockingStaffs.setCreateby(userName);
+                activityDockingStaffs.setDockingStaffs(dockingStaff);
+                activityDockingStaffsService.insert(activityDockingStaffs);
+            }
+
         }
         if (!CollectionUtils.isEmpty(note.getParticipants())){
-            //根据活动id清空参与人表，并插入 TODO
-            ActivityDockingStaffs activityDockingStaffs = new ActivityDockingStaffs();
-            activityDockingStaffs.setActivityId(activityId);
-            activityDockingStaffs.setCreatetime(now);
-            activityDockingStaffs.setCreateby(userName);
-            activityDockingStaffsService.insert(activityDockingStaffs);
+            //根据活动id清空参与人表，并插入
+            List<String> participants = note.getParticipants();
+            for (String participant : participants) {
+                ActivityTaskOwner activityTaskOwner = new ActivityTaskOwner();
+                activityTaskOwner.setActivityId(activityId);
+                activityTaskOwner.setCreatetime(now);
+                activityTaskOwner.setCreateby(userName);
+                activityTaskOwner.setTaskOwner(participant);
+                activityTaskOwnerService.insert(activityTaskOwner);
+            }
+
         }
     }
 
