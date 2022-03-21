@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.util.Date;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * (Activity)实体类
@@ -51,6 +52,10 @@ public class Activity implements Serializable {
      */
     private String typeofactivity;
     /**
+     * 活动名称
+     */
+    private String activityName;
+    /**
      * 活动地址
      */
     private String eventaddress;
@@ -78,6 +83,8 @@ public class Activity implements Serializable {
     private String status;
     
     private Long price;
+
+    private List<String> fileNames;
 
 
 
@@ -154,6 +161,14 @@ public class Activity implements Serializable {
         this.typeofactivity = typeofactivity;
     }
 
+    public String getActivityName() {
+        return activityName;
+    }
+
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
+    }
+
     public String getEventaddress() {
         return eventaddress;
     }
@@ -216,6 +231,14 @@ public class Activity implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<String> getFileNames() {
+        return fileNames;
+    }
+
+    public void setFileNames(List<String> fileNames) {
+        this.fileNames = fileNames;
     }
 }
 

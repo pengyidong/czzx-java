@@ -4,6 +4,9 @@ import com.peng.note.entity.ActivityFile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
 /**
  * (ActivityFile)表服务接口
  *
@@ -38,6 +41,14 @@ public interface ActivityFileService {
     ActivityFile insert(ActivityFile activityFile);
 
     /**
+     * 批量新增数据
+     *
+     * @param entities 实例对象列表
+     * @return 新增的行数
+     */
+    Integer batchInsert(List<ActivityFile> entities);
+
+    /**
      * 修改数据
      *
      * @param activityFile 实例对象
@@ -52,5 +63,36 @@ public interface ActivityFileService {
      * @return 是否成功
      */
     boolean deleteById(String id);
+
+    /**
+     *
+     * @param request
+     * @param fileType 文件类型 1是图片，2是文件
+     * @param activityId 活动id
+     * @return
+     */
+    List<String> multiUpload(HttpServletRequest request, String fileType, String activityId);
+
+    /**
+     * 删除单个文件
+     * @param fileName
+     * @return
+     */
+    Boolean deleteFile(String fileName);
+
+    /**
+     * 批量删除文件
+     * @param fileNames
+     * @return
+     */
+    Boolean multiDelete(List<String> fileNames);
+
+    /**
+     * 根据活动id查询文件记录
+     * @param activityId
+     * @return
+     */
+    List<ActivityFile> queryByActivity(String activityId);
+
 
 }

@@ -79,5 +79,41 @@ public interface ActivityFileDao {
      */
     int deleteById(String id);
 
+    /**
+     * 通过主键列表批量删除数据
+     *
+     * @param ids 主键
+     * @return 影响行数
+     */
+    int batchDelete(List<String> ids);
+
+    /**
+     * 通过newName字段批量删除文件
+     * @param fileNames
+     * @return
+     */
+    int deleteByNewFile(List<String> fileNames);
+
+    /**
+     * 根据活动id删除文件记录
+     * @param activityId
+     * @return
+     */
+    int deleteByActivity(String activityId);
+
+    /**
+     * 根据新文件名称查询文件记录
+     * @param newNames
+     * @return
+     */
+    List<ActivityFile> queryByNewName(List<String> newNames);
+
+    /**
+     * 根据活动id查询文件记录
+     * @param activityId
+     * @return
+     */
+    List<ActivityFile> queryByActivity(String activityId);
+
 }
 

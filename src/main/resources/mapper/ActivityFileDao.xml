@@ -10,6 +10,7 @@
         <result property="updateby" column="updateBy" jdbcType="VARCHAR"/>
         <result property="activityId" column="activity_id" jdbcType="VARCHAR"/>
         <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+        <result property="newName" column="new_name" jdbcType="VARCHAR"/>
         <result property="fileType" column="file_type" jdbcType="VARCHAR"/>
         <result property="fileExtension" column="file_extension" jdbcType="VARCHAR"/>
         <result property="filePath" column="file_path" jdbcType="VARCHAR"/>
@@ -18,7 +19,7 @@
     <!--查询单个-->
     <select id="queryById" resultMap="ActivityFileMap">
         select
-          id, createTime, createBy, updateTime, updateBy, activity_id, file_name, file_type, file_extension, file_path
+          id, createTime, createBy, updateTime, updateBy, activity_id, file_name, new_name, file_type, file_extension, file_path
         from activity_file
         where id = #{id}
     </select>
@@ -26,7 +27,7 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="ActivityFileMap">
         select
-          id, createTime, createBy, updateTime, updateBy, activity_id, file_name, file_type, file_extension, file_path
+          id, createTime, createBy, updateTime, updateBy, activity_id, file_name, new_name, file_type, file_extension, file_path
         from activity_file
         <where>
             <if test="id != null and id != ''">
@@ -49,6 +50,9 @@
             </if>
             <if test="fileName != null and fileName != ''">
                 and file_name = #{fileName}
+            </if>
+            <if test="newName != null and newName != ''">
+                and new_name = #{newName}
             </if>
             <if test="fileType != null and fileType != ''">
                 and file_type = #{fileType}
@@ -89,6 +93,9 @@
             <if test="fileName != null and fileName != ''">
                 and file_name = #{fileName}
             </if>
+            <if test="newName != null and newName != ''">
+                and new_name = #{newName}
+            </if>
             <if test="fileType != null and fileType != ''">
                 and file_type = #{fileType}
             </if>
@@ -103,23 +110,23 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into activity_file(id,createTime, createBy, updateTime, updateBy, activity_id, file_name, file_type, file_extension, file_path)
-        values (#{activityFile.id},#{activityFile.createtime}, #{activityFile.createby}, #{activityFile.updatetime}, #{activityFile.updateby}, #{activityFile.activityId}, #{activityFile.fileName}, #{activityFile.fileType}, #{activityFile.fileExtension}, #{activityFile.filePath})
+        insert into activity_file(id,createTime, createBy, updateTime, updateBy, activity_id, file_name, new_name, file_type, file_extension, file_path)
+        values (#{activityFile.id},#{activityFile.createtime}, #{activityFile.createby}, #{activityFile.updatetime}, #{activityFile.updateby}, #{activityFile.activityId}, #{activityFile.fileName}, #{activityFile.newName}, #{activityFile.fileType}, #{activityFile.fileExtension}, #{activityFile.filePath})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into activity_file(createTime, createBy, updateTime, updateBy, activity_id, file_name, file_type, file_extension, file_path)
+        insert into activity_file(id, createTime, createBy, updateTime, updateBy, activity_id, file_name, new_name, file_type, file_extension, file_path)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.createtime}, #{entity.createby}, #{entity.updatetime}, #{entity.updateby}, #{entity.activityId}, #{entity.fileName}, #{entity.fileType}, #{entity.fileExtension}, #{entity.filePath})
+        (#{entity.id}, #{entity.createtime}, #{entity.createby}, #{entity.updatetime}, #{entity.updateby}, #{entity.activityId}, #{entity.fileName}, #{entity.newName}, #{entity.fileType}, #{entity.fileExtension}, #{entity.filePath})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into activity_file(createTime, createBy, updateTime, updateBy, activity_id, file_name, file_type, file_extension, file_path)
+        insert into activity_file(createTime, createBy, updateTime, updateBy, activity_id, file_name, new_name, file_type, file_extension, file_path)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.createtime}, #{entity.createby}, #{entity.updatetime}, #{entity.updateby}, #{entity.activityId}, #{entity.fileName}, #{entity.fileType}, #{entity.fileExtension}, #{entity.filePath})
+            (#{entity.createtime}, #{entity.createby}, #{entity.updatetime}, #{entity.updateby}, #{entity.activityId}, #{entity.fileName}, #{entity.newName}, #{entity.fileType}, #{entity.fileExtension}, #{entity.filePath})
         </foreach>
         on duplicate key update
         createTime = values(createTime),
@@ -128,6 +135,7 @@
         updateBy = values(updateBy),
         activity_id = values(activity_id),
         file_name = values(file_name),
+        new_name = values(new_name),
         file_type = values(file_type),
         file_extension = values(file_extension),
         file_path = values(file_path)
@@ -155,6 +163,9 @@
             <if test="fileName != null and fileName != ''">
                 file_name = #{fileName},
             </if>
+            <if test="newName != null and newName != ''">
+                new_name = #{newName},
+            </if>
             <if test="fileType != null and fileType != ''">
                 file_type = #{fileType},
             </if>
@@ -172,6 +183,43 @@
     <delete id="deleteById">
         delete from activity_file where id = #{id}
     </delete>
+
+    <!--通过主键列表批量删除-->
+    <delete id="batchDelete">
+        delete from activity_file where id in (
+        <foreach collection="ids" item="entity" separator=",">
+            #{entity}
+        </foreach>
+        )
+    </delete>
+
+    <!--通过newFile批量删除-->
+    <delete id="deleteByNewFile">
+        delete from activity_file where new_name in (
+        <foreach collection="fileNames" item="entity" separator=",">
+            #{entity}
+        </foreach>
+        )
+    </delete>
+
+    <!--根据活动id删除-->
+    <delete id="deleteByActivity">
+        delete from activity_file where activity_id = #{activityId}
+    </delete>
+
+    <!-- 根据新文件名称列表查询文件记录 -->
+    <select id="queryByNewName" resultMap="ActivityFileMap">
+        select id, createTime, createBy, updateTime, updateBy, activity_id, file_name, new_name, file_type, file_extension, file_path from activity_file where new_name in (
+        <foreach collection="newNames" item="entity" separator=",">
+            #{entity}
+        </foreach>
+        )
+    </select>
+
+    <!-- 根据活动id查询文件记录 -->
+    <select id="queryByActivity" resultMap="ActivityFileMap">
+        select id, createTime, createBy, updateTime, updateBy, activity_id, file_name, new_name, file_type, file_extension, file_path from activity_file where activity_id = #{activityId}
+    </select>
 
 </mapper>
 

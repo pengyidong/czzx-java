@@ -3,6 +3,7 @@ package com.peng.note.controller;
 import com.peng.note.entity.Activity;
 import com.peng.note.service.ActivityService;
 import com.peng.note.utils.ResultUtils;
+import org.apache.tomcat.util.http.ResponseUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ import javax.annotation.Resource;
  * @since 2022-02-26 14:23:48
  */
 @RestController
-@RequestMapping("activity")
+@RequestMapping("/activity")
 public class ActivityController {
     /**
      * 服务对象
@@ -55,7 +56,7 @@ public class ActivityController {
      * @return 新增结果
      */
     @PostMapping
-    public ResponseEntity<Activity> add(Activity activity) {
+    public ResponseEntity<Activity> add(@RequestBody Activity activity) {
         return ResponseEntity.ok(this.activityService.insert(activity));
     }
 
@@ -66,7 +67,7 @@ public class ActivityController {
      * @return 编辑结果
      */
     @PutMapping
-    public ResultUtils edit(Activity activity) {
+    public ResultUtils edit(@RequestBody Activity activity) {
         return ResultUtils.ok(this.activityService.update(activity));
     }
 
@@ -79,6 +80,15 @@ public class ActivityController {
     @DeleteMapping
     public ResponseEntity<Boolean> deleteById(String id) {
         return ResponseEntity.ok(this.activityService.deleteById(id));
+    }
+
+    /**
+     * 统计日期对应的活动数量
+     * @return
+     */
+    @GetMapping("/countNumber")
+    public ResultUtils countNumberOfActivityDate(){
+        return ResultUtils.ok(activityService.countNumberOfActivityDate());
     }
 
 }

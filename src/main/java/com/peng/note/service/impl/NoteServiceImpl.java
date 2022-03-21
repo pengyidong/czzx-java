@@ -39,6 +39,9 @@ public class NoteServiceImpl implements NoteService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ActivityFileService activityFileService;
+
 
     @Override
     @Transactional
@@ -54,6 +57,7 @@ public class NoteServiceImpl implements NoteService {
         activity.setId(activityId);
         activity.setCreatetime(now);
         activity.setCreateby(nickName);
+        activity.setFileNames(note.getFileNames());
         //保存入活动表,获取生成的活动id
         activityService.insert(activity);
         if (!CollectionUtils.isEmpty(note.getDockingStaffs())){
@@ -95,6 +99,7 @@ public class NoteServiceImpl implements NoteService {
         String activityId = activity.getId();
         activity.setUpdateby(userName);
         activity.setUpdatetime(now);
+        activity.setFileNames(note.getFileNames());
         activityService.update(activity);
         //根据活动id清空对接人表和参与人表
         activityDockingStaffsService.deleteByActivityId(activityId);
@@ -138,6 +143,16 @@ public class NoteServiceImpl implements NoteService {
         for (Activity activity : activityStream) {
             Note note = new Note();
             String activityId = activity.getId();
+            //查出文件记录，获取文件地址
+            List<ActivityFile> activityFiles = activityFileService.queryByActivity(activityId);
+            activity.setFileNames(activityFiles.stream().map(item -> {
+                if("1".equals(item.getFileType())){
+                    return "/image/" + item.getNewName();
+                }else if("2".equals(item.getFileType())){
+                    return "/file/" + item.getNewName();
+                }
+                return item.getNewName();
+            }).collect(Collectors.toList()));
             List<String> activityTaskOwners = activityTaskOwnerService.queryByActivityId(activityId);
 
             List<String> activityDockingStaffs = activityDockingStaffsService.queryByActivityId(activityId);

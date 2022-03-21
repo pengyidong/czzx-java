@@ -83,5 +83,11 @@ public interface ActivityDao {
 
     List<Note> queryByPage(Note note, Page page);
 
+    /**
+     * 查出所有活动信息
+     * @return
+     */
+    List<Activity> queryAll();
+
 }
 

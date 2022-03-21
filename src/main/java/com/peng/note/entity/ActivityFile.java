@@ -42,6 +42,10 @@ public class ActivityFile implements Serializable {
      */
     private String fileName;
     /**
+     * 新文件名
+     */
+    private String newName;
+    /**
      * 文件类型
      */
     private String fileType;
@@ -109,6 +113,14 @@ public class ActivityFile implements Serializable {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getNewName() {
+        return newName;
+    }
+
+    public void setNewName(String newName) {
+        this.newName = newName;
     }
 
     public String getFileType() {

@@ -12,6 +12,7 @@
         <result property="visitingcontact" column="visitingContact" jdbcType="VARCHAR"/>
         <result property="contactnumber" column="contactNumber" jdbcType="VARCHAR"/>
         <result property="typeofactivity" column="typeOfActivity" jdbcType="VARCHAR"/>
+        <result property="activityName" column="activityName" jdbcType="VARCHAR"/>
         <result property="eventaddress" column="eventAddress" jdbcType="VARCHAR"/>
         <result property="starttime" column="startTime" jdbcType="TIMESTAMP"/>
         <result property="endtime" column="endTime" jdbcType="TIMESTAMP"/>
@@ -25,7 +26,7 @@
     <!--查询单个-->
     <select id="queryById" resultMap="ActivityMap">
         select
-          id, createTime, createBy, updateTime, updateBy, visitingUnit, visitingContact, contactNumber, typeOfActivity, eventAddress, startTime, endTime, numberOfPeople, reasonForVisit, note, price,status
+          id, createTime, createBy, updateTime, updateBy, visitingUnit, visitingContact, contactNumber, typeOfActivity, activityName, eventAddress, startTime, endTime, numberOfPeople, reasonForVisit, note, price,status
         from activity
         where id = #{id}
     </select>
@@ -33,7 +34,7 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="ActivityMap">
         select
-          id, createTime, createBy, updateTime, updateBy, visitingUnit, visitingContact, contactNumber, typeOfActivity, eventAddress, startTime, endTime, numberOfPeople, reasonForVisit, note, price,status
+          id, createTime, createBy, updateTime, updateBy, visitingUnit, visitingContact, contactNumber, typeOfActivity, activityName, eventAddress, startTime, endTime, numberOfPeople, reasonForVisit, note, price,status
         from activity
         <where>
             <if test="activity!=null">
@@ -63,6 +64,9 @@
             </if>
             <if test="activity.typeofactivity != null and activity.typeofactivity != ''">
                 and typeOfActivity = #{activity.typeofactivity}
+            </if>
+            <if test="activity.activityName != null and activity.activityName != ''">
+                and activityName = #{activity.activityName}
             </if>
             <if test="activity.eventaddress != null and activity.eventaddress != ''">
                 and eventAddress = #{activity.eventaddress}
@@ -129,6 +133,9 @@
                 <if test="activity.typeofactivity != null and activity.typeofactivity != ''">
                     and typeOfActivity = #{activity.typeofactivity}
                 </if>
+                <if test="activity.activityName != null and activity.activityName != ''">
+                    and activityName = #{activity.activityName}
+                </if>
                 <if test="activity.eventaddress != null and activity.eventaddress != ''">
                     and eventAddress = #{activity.eventaddress}
                 </if>
@@ -163,23 +170,23 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into activity(id,createTime, createBy, updateTime, updateBy, visitingUnit, visitingContact, contactNumber, typeOfActivity, eventAddress, startTime, endTime, numberOfPeople, reasonForVisit, note, price,status)
-        values (#{id},#{createtime}, #{createby}, #{updatetime}, #{updateby}, #{visitingunit}, #{visitingcontact}, #{contactnumber}, #{typeofactivity}, #{eventaddress}, #{starttime}, #{endtime}, #{numberofpeople}, #{reasonforvisit}, #{note}, #{price},#{status})
+        insert into activity(id,createTime, createBy, updateTime, updateBy, visitingUnit, visitingContact, contactNumber, typeOfActivity, activityName, eventAddress, startTime, endTime, numberOfPeople, reasonForVisit, note, price,status)
+        values (#{id},#{createtime}, #{createby}, #{updatetime}, #{updateby}, #{visitingunit}, #{visitingcontact}, #{contactnumber}, #{typeofactivity}, #{activityName}, #{eventaddress}, #{starttime}, #{endtime}, #{numberofpeople}, #{reasonforvisit}, #{note}, #{price},#{status})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into activity(createTime, createBy, updateTime, updateBy, visitingUnit, visitingContact, contactNumber, typeOfActivity, eventAddress, startTime, endTime, numberOfPeople, reasonForVisit, note, price,status)
+        insert into activity(createTime, createBy, updateTime, updateBy, visitingUnit, visitingContact, contactNumber, typeOfActivity, activityName, eventAddress, startTime, endTime, numberOfPeople, reasonForVisit, note, price,status)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.createtime}, #{entity.createby}, #{entity.updatetime}, #{entity.updateby}, #{entity.visitingunit}, #{entity.visitingcontact}, #{entity.contactnumber}, #{entity.typeofactivity}, #{entity.eventaddress}, #{entity.starttime}, #{entity.endtime}, #{entity.numberofpeople}, #{entity.reasonforvisit}, #{entity.note}, #{entity.price},#{entity.status})
+        (#{entity.createtime}, #{entity.createby}, #{entity.updatetime}, #{entity.updateby}, #{entity.visitingunit}, #{entity.visitingcontact}, #{entity.contactnumber}, #{entity.typeofactivity}, #{entity.activityName}, #{entity.eventaddress}, #{entity.starttime}, #{entity.endtime}, #{entity.numberofpeople}, #{entity.reasonforvisit}, #{entity.note}, #{entity.price},#{entity.status})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into activity(createTime, createBy, updateTime, updateBy, visitingUnit, visitingContact, contactNumber, typeOfActivity, eventAddress, startTime, endTime, numberOfPeople, reasonForVisit, note, price,status)
+        insert into activity(createTime, createBy, updateTime, updateBy, visitingUnit, visitingContact, contactNumber, typeOfActivity, activityName, eventAddress, startTime, endTime, numberOfPeople, reasonForVisit, note, price,status)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.createtime}, #{entity.createby}, #{entity.updatetime}, #{entity.updateby}, #{entity.visitingunit}, #{entity.visitingcontact}, #{entity.contactnumber}, #{entity.typeofactivity}, #{entity.eventaddress}, #{entity.starttime}, #{entity.endtime}, #{entity.numberofpeople}, #{entity.reasonforvisit}, #{entity.note}, #{entity.price},#{entity.status})
+            (#{entity.createtime}, #{entity.createby}, #{entity.updatetime}, #{entity.updateby}, #{entity.visitingunit}, #{entity.visitingcontact}, #{entity.contactnumber}, #{entity.typeofactivity}, #{entity.activityName}, #{entity.eventaddress}, #{entity.starttime}, #{entity.endtime}, #{entity.numberofpeople}, #{entity.reasonforvisit}, #{entity.note}, #{entity.price},#{entity.status})
         </foreach>
         on duplicate key update
         createTime = values(createTime),
@@ -190,6 +197,7 @@
         visitingContact = values(visitingContact),
         contactNumber = values(contactNumber),
         typeOfActivity = values(typeOfActivity),
+        activityName = values(activityName),
         eventAddress = values(eventAddress),
         startTime = values(startTime),
         endTime = values(endTime),
@@ -228,6 +236,9 @@
             <if test="typeofactivity != null and typeofactivity != ''">
                 typeOfActivity = #{typeofactivity},
             </if>
+            <if test="activityName != null and activityName != ''">
+                activityName = #{activityName},
+            </if>
             <if test="eventaddress != null and eventaddress != ''">
                 eventAddress = #{eventaddress},
             </if>
@@ -260,6 +271,12 @@
     <delete id="deleteById">
         delete from activity where id = #{id}
     </delete>
+
+    <!-- 查询所有活动 -->
+    <select id="queryAll" resultMap="ActivityMap">
+        select id,createTime, createBy, updateTime, updateBy, visitingUnit, visitingContact, contactNumber, typeOfActivity, activityName, eventAddress, startTime, endTime, numberOfPeople, reasonForVisit, note, price,status from activity
+        where startTime is not null;
+    </select>
 
 </mapper>
 

@@ -1,8 +1,11 @@
 package com.peng.note.service;
 
 import com.peng.note.entity.Activity;
+import com.peng.note.service.impl.ActivityServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+
+import java.util.List;
 
 /**
  * (Activity)表服务接口
@@ -52,5 +55,17 @@ public interface ActivityService {
      * @return 是否成功
      */
     boolean deleteById(String id);
+
+    /**
+     * 查出所有活动信息
+     * @return
+     */
+    List<Activity> queryAll();
+
+    /**
+     * 统计日期对应的活动数量
+     * @return
+     */
+    List<ActivityServiceImpl.NumberOfActivityDate> countNumberOfActivityDate();
 
 }

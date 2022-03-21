@@ -18,3 +18,7 @@ token:
 logging:
     level:
       com.peng.note.dao: debug
+
+url:
+    upload: /www/upload/
+#  upload: E:\upload\file\

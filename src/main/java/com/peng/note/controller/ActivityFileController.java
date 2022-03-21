@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -142,6 +144,43 @@ public class ActivityFileController {
     @DeleteMapping
     public ResponseEntity<Boolean> deleteById(String id) {
         return ResponseEntity.ok(this.activityFileService.deleteById(id));
+    }
+
+    /**
+     *
+     * @param request
+     * @param fileType 文件类型 1是图片，2是文件
+     * @param activityId 活动id
+     * @return
+     */
+    @PostMapping("/multiUpload/{fileType}")
+    public ResultUtils multiUpload(HttpServletRequest request,
+                                   @PathVariable("fileType") String fileType, @RequestParam(value = "activityId", required = false) String activityId){
+        List<String> fileList = activityFileService.multiUpload(request, fileType, activityId);
+        if(fileList == null){
+            return ResultUtils.build(500, "文件上传失败");
+        }
+        return ResultUtils.ok(fileList);
+    }
+
+    /**
+     * 删除单个文件
+     * @param fileName 类似  aaa.doc  的文件名
+     * @return
+     */
+    @DeleteMapping("/deleteFile/{fileName}")
+    public ResultUtils delete(@PathVariable("fileName") String fileName){
+        return ResultUtils.ok(activityFileService.deleteFile(fileName));
+    }
+
+    /**
+     * 批量删除文件
+     * @param fileList 类似  aaa.doc  的文件名集合
+     * @return
+     */
+    @DeleteMapping(value = "/multiDelete")
+    public ResultUtils multiDelete(@RequestBody List<String> fileList){
+        return ResultUtils.ok(activityFileService.multiDelete(fileList));
     }
 
 }
