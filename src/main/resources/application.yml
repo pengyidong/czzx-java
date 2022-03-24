@@ -8,6 +8,12 @@ spring:
     url: jdbc:mysql://175.178.87.39:3306/note
     username: note_peng
     password: 123456
+  servlet:
+    multipart:
+      # 每个文件的配置最大为10MB（默认为1MB）
+      max-file-size: 10MB
+      # 单次请求的文件总数不能大于100MB（默认为10MB）
+      max-request-size: 100MB
 mybatis:
   type-aliases-package: com.peng.note
   mapper-locations: classpath:mapper/*.xml

@@ -15,10 +15,7 @@ import org.springframework.data.domain.PageRequest;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -68,10 +65,26 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public Activity insert(Activity activity) {
         //如果图片名称的集合不为空，则根据文件名称查询文件记录表，更新记录的活动id
-        if(activity.getFileNames() != null && !activity.getFileNames().isEmpty()){
-            List<ActivityFile> activityFileList = activityFileDao.queryByNewName(activity.getFileNames());
+        List<String> nameList = new ArrayList<>();
+        if(activity.getImageList() != null && !activity.getImageList().isEmpty()){
+            nameList = activity.getImageList();
+        }
+        //key:name value:path
+        Map<String, String> namePathMap = new HashMap<>();
+        if(activity.getFileList() != null && !activity.getFileList().isEmpty()){
+            for (ActivityFile.File file : activity.getFileList()) {
+                nameList.add(file.getName());
+                namePathMap.put(file.getName(), file.getPath());
+            }
+        }
+        if(nameList.size() > 0){
+            List<ActivityFile> activityFileList = activityFileDao.queryByNewName(nameList);
             //给活动id赋值
             List<ActivityFile> fileList = activityFileList.stream().map(item -> {
+                //保存path
+                if(namePathMap.containsKey(item.getNewName())){
+                    item.setPath(namePathMap.get(item.getNewName()));
+                }
                 item.setActivityId(activity.getId());
                 return item;
             }).collect(Collectors.toList());
@@ -94,19 +107,37 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public Activity update(Activity activity) {
         //如果图片名称集合不为空，则根据文件名称查询文件记录表，更新最新的文件记录
-        if(activity.getFileNames() != null && !activity.getFileNames().isEmpty()){
-            List<ActivityFile> activityFileList = activityFileDao.queryByNewName(activity.getFileNames());
+        List<String> nameList = new ArrayList<>();
+        if(activity.getImageList() != null && !activity.getImageList().isEmpty()){
+            nameList = activity.getImageList();
+        }
+        //key:name value:path
+        Map<String, String> namePathMap = new HashMap<>();
+        if(activity.getFileList() != null && !activity.getFileList().isEmpty()){
+            for (ActivityFile.File file : activity.getFileList()) {
+                nameList.add(file.getName());
+                namePathMap.put(file.getName(), file.getPath());
+            }
+        }
+        if(nameList.size() > 0){
+            List<ActivityFile> activityFileList = activityFileDao.queryByNewName(nameList);
             //遍历这个集合，找到已经多余的文件记录，删除
             List<String> ids = new ArrayList<>();
+            List<ActivityFile> fileList = new ArrayList<>();
             for (ActivityFile file : activityFileList) {
-                if(!activity.getFileNames().contains(file.getNewName())){
-                    ids.add(file.getId());
+                ids.add(file.getId());
+                if(nameList.contains(file.getNewName())){
+                    file.setPath(namePathMap.get(file.getNewName()));
+                    fileList.add(file);
                 }
                 //猜测还存在一种可能：编辑时，上传的文件还是没有指定活动id，导致活动id为空，此时这里需要添加上活动id
             }
             //批量删除多余的文件记录
             if(!ids.isEmpty()){
                 activityFileDao.batchDelete(ids);
+            }
+            if(fileList.isEmpty()){
+                activityFileDao.insertBatch(fileList);
             }
         }
         this.activityDao.update(activity);

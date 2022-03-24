@@ -4,10 +4,12 @@ import com.peng.note.entity.Activity;
 import com.peng.note.entity.ActivityFile;
 import com.peng.note.service.ActivityFileService;
 import com.peng.note.service.ActivityService;
+import com.peng.note.utils.FileUtil;
 import com.peng.note.utils.ResultUtils;
 import com.peng.note.utils.SnowFlakeUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -44,6 +44,9 @@ public class ActivityFileController {
     private ActivityService activityService;
 
     static  String uploadPath = "E:\\worker\\img";
+
+    @Value("${url.upload}")
+    private String fileUploadUrl;
 
     /**
      * 分页查询
@@ -181,6 +184,30 @@ public class ActivityFileController {
     @DeleteMapping(value = "/multiDelete")
     public ResultUtils multiDelete(@RequestBody List<String> fileList){
         return ResultUtils.ok(activityFileService.multiDelete(fileList));
+    }
+
+    @GetMapping("/file/{type}/{fileName}")
+    public void renderFile(HttpServletResponse response, @PathVariable String type, @PathVariable String fileName){
+        if(type == null || "".equals(type) ||fileName == null || "".equals(fileName)) {
+            return;
+        }
+
+        // /www/upload/
+        StringBuilder filePath = new StringBuilder(fileUploadUrl);
+        if("1".equals(type)){
+            filePath.append("image/");
+        }else if("2".equals(type)){
+            filePath.append("file/");
+        }
+        filePath.append(fileName);
+
+        try {
+            byte[] bytes = FileUtil.toByteArray(filePath.toString());
+            response.getOutputStream().write(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

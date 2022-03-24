@@ -57,7 +57,9 @@ public class NoteServiceImpl implements NoteService {
         activity.setId(activityId);
         activity.setCreatetime(now);
         activity.setCreateby(nickName);
-        activity.setFileNames(note.getFileNames());
+//        activity.setFileNames(note.getFileNames());
+        activity.setImageList(note.getImageList());
+        activity.setFileList(note.getFileList());
         //保存入活动表,获取生成的活动id
         activityService.insert(activity);
         if (!CollectionUtils.isEmpty(note.getDockingStaffs())){
@@ -99,7 +101,9 @@ public class NoteServiceImpl implements NoteService {
         String activityId = activity.getId();
         activity.setUpdateby(userName);
         activity.setUpdatetime(now);
-        activity.setFileNames(note.getFileNames());
+//        activity.setFileNames(note.getFileNames());
+        activity.setImageList(note.getImageList());
+        activity.setFileList(note.getFileList());
         activityService.update(activity);
         //根据活动id清空对接人表和参与人表
         activityDockingStaffsService.deleteByActivityId(activityId);
@@ -145,14 +149,21 @@ public class NoteServiceImpl implements NoteService {
             String activityId = activity.getId();
             //查出文件记录，获取文件地址
             List<ActivityFile> activityFiles = activityFileService.queryByActivity(activityId);
-            activity.setFileNames(activityFiles.stream().map(item -> {
-                if("1".equals(item.getFileType())){
-                    return "/image/" + item.getNewName();
-                }else if("2".equals(item.getFileType())){
-                    return "/file/" + item.getNewName();
+            List<String> imageList = new ArrayList<>();
+            List<ActivityFile.File> fileList = new ArrayList<>();
+            if(activityFiles != null && !activityFiles.isEmpty()){
+                for (ActivityFile item : activityFiles) {
+                    if("1".equals(item.getFileType())){
+                        imageList.add(item.getNewName());
+                    }else if("2".equals(item.getFileType())){
+                        ActivityFile.File file = ActivityFile.createFile(item.getNewName(), item.getPath());
+                        fileList.add(file);
+                    }
                 }
-                return item.getNewName();
-            }).collect(Collectors.toList()));
+            }
+            activity.setImageList(imageList);
+            activity.setFileList(fileList);
+
             List<String> activityTaskOwners = activityTaskOwnerService.queryByActivityId(activityId);
 
             List<String> activityDockingStaffs = activityDockingStaffsService.queryByActivityId(activityId);

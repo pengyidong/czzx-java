@@ -84,8 +84,9 @@ public class Activity implements Serializable {
     
     private Long price;
 
-    private List<String> fileNames;
-
+//    private List<String> fileNames;
+    private List<String> imageList;
+    private List<ActivityFile.File> fileList;
 
 
 
@@ -233,12 +234,20 @@ public class Activity implements Serializable {
         this.status = status;
     }
 
-    public List<String> getFileNames() {
-        return fileNames;
+    public List<String> getImageList() {
+        return imageList;
     }
 
-    public void setFileNames(List<String> fileNames) {
-        this.fileNames = fileNames;
+    public void setImageList(List<String> imageList) {
+        this.imageList = imageList;
+    }
+
+    public List<ActivityFile.File> getFileList() {
+        return fileList;
+    }
+
+    public void setFileList(List<ActivityFile.File> fileList) {
+        this.fileList = fileList;
     }
 }
 

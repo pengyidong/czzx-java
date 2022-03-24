@@ -29,7 +29,9 @@ public class Note  {
     /**
      * 上传的文件名称列表（新文件名，无需加后缀）
      */
-    private List<String> fileNames;
+//    private List<String> fileNames;
+    private List<String> imageList;
+    private List<ActivityFile.File> fileList;
 
     public List<String> getDockingStaffs() {
         return dockingStaffs;
@@ -55,11 +57,19 @@ public class Note  {
         this.activity = activity;
     }
 
-    public List<String> getFileNames() {
-        return fileNames;
+    public List<String> getImageList() {
+        return imageList;
     }
 
-    public void setFileNames(List<String> fileNames) {
-        this.fileNames = fileNames;
+    public void setImageList(List<String> imageList) {
+        this.imageList = imageList;
+    }
+
+    public List<ActivityFile.File> getFileList() {
+        return fileList;
+    }
+
+    public void setFileList(List<ActivityFile.File> fileList) {
+        this.fileList = fileList;
     }
 }

@@ -2,6 +2,9 @@ package com.peng.note.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.io.Serializable;
@@ -57,6 +60,23 @@ public class ActivityFile implements Serializable {
      * 文件路径
      */
     private String filePath;
+
+    /**
+     * 当文件类型是2时，需要保存path
+     */
+    private String path;
+
+    public static File createFile(String name, String path){
+        return new File(name, path);
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class File{
+        private String name;
+        private String path;
+    }
 
 
     public String getId() {
@@ -145,6 +165,14 @@ public class ActivityFile implements Serializable {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
 }
